@@ -4,9 +4,8 @@ $(document).ready(function(){
 	guessNum,
 	numFeedback;
 
+	var guessCount = 0;
 	var alreadyGuessed = [];
-
-
 	pageLoad();
 
 		function pageLoad(){
@@ -31,32 +30,43 @@ $(document).ready(function(){
 		//click NEW GAME button to generate a new random number
 		$(".new").click(function(){
 			numGenerator();
+			clearGame();
+		});
+
+		//clears game variables and feedback
+		function clearGame(){
 			alreadyGuessed = [];
 			numFeedback = "";
+			guessCount = 0;
+			$("#guessList").text("");
 			$("#feedback").text("Make your Guess!");
-		});
+			$("#count").text("0");
+		}
 
 		// stores users guess
 		$("#guessButton").click(function(event){
 			event.preventDefault();
 	    guessNum = parseInt($("#userGuess").val());
-			numCheck(randomNum, guessNum);
-			$("#userGuess").val("");
-			guessQ(guessNum);
-			guessCount =+ 1;
+			buttonCheck(guessNum);
+			if(isNaN(guessNum) == false){
+				numCheck(randomNum, guessNum);
+				$("#userGuess").val("");
+				guessQ(guessNum);
+				numOfGuesses();
+			}
 	  });
 
-		function buttonCheck(){
-			alert("please enter your guess");
+		//makes sure you enter a guess
+		function buttonCheck(blankTxt){
+			if(isNaN(blankTxt) == true){
+				alert("please enter your guess");
+			}
 		}
 
 		// checks number and outputs feedback
 		function numCheck(rand, guess){
 			var howClose = guess - rand;
 			numFeedback = Math.abs(howClose);
-			console.log(numFeedback);
-			console.log("random #: " + rand);
-			console.log("guess #: " + guess);
 			if(numFeedback >= 50){
 				$("#feedback").text("ice cold");
 			}
@@ -80,12 +90,17 @@ $(document).ready(function(){
 			}
 		}
 
+		//feedback on what users guesses were
 		function guessQ(guess){
-			var guessCount = 0;
 			alreadyGuessed.push(guess);
 			$("#guessList").append("<li>" + alreadyGuessed[guessCount] + "</li>");
-			console.log(guessCount);
-			console.log(alreadyGuessed[guessCount]);
+			// console.log("guess count: " + guessCount);
+			// console.log("number already guessed: " + alreadyGuessed[guessCount]);
 		}
 
+		//tracks how many guesses the user made
+		function numOfGuesses(){
+			guessCount = guessCount + 1;
+			$("#count").text(guessCount);
+		}
 });
